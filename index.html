@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مختبر تصميم شبكات المياه</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="eyebrow">WATER NETWORK DESIGN LAB</div>
+      <h1>مختبر تصميم شبكات المياه</h1>
+      <p>ارسم الشبكة، واربط العقد، وأدخل بيانات الأنابيب.</p>
+    </header>
+
+    <section class="toolbar" aria-label="أدوات الشبكة">
+      <button id="addSource" class="tool source-tool">＋ إضافة مصدر</button>
+      <button id="addJunction" class="tool">＋ عقدة ربط</button>
+      <button id="addDemand" class="tool">＋ عقدة استهلاك</button>
+      <button id="connect" class="tool">↔ رسم أنبوب</button>
+      <button id="calculateNetwork" class="tool calculate-tool">
+        ⚙ تحليل هيدروليكي
+      </button>
+      <select id="solverMethod" class="tool method-select" title="طريقة الحل">
+        <option value="hardyCross" selected>طريقة هاردي كروس</option>
+        <option value="globalGradient">نيوتن-رافسون</option>
+      </select>
+      <button id="deleteElement" class="tool danger">حذف المحدد</button>
+      <button id="clearNetwork" class="tool">شبكة جديدة</button>
+    </section>
+
+    <section class="workspace">
+      <div class="canvas-heading">
+        <h2>مساحة تصميم الشبكة</h2>
+        <span id="modeBadge">وضع التحديد</span>
+      </div>
+      <!-- تم تعديل هذه الحاوية لضمان ظهور الرسم على الهاتف -->
+      <div class="canvas-wrap" style="min-height: 400px; height: 50vh;">
+        <svg id="network" viewBox="0 0 800 500" style="height: 100%; width: 100%;" role="img" aria-label="مساحة رسم شبكة المياه">
+          <defs>
+            <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+              <path d="M 25 0 L 0 0 0 25" class="grid-line" fill="none"/>
+            </pattern>
+            <marker id="flowArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L6,3 z" fill="#176b87"/>
+            </marker>
+          </defs>
+          <rect width="800" height="500" fill="url(#grid)"/>
+          <g id="pipesLayer"></g>
+          <g id="nodesLayer"></g>
+        </svg>
+      </div>
+      <p id="status" class="status" aria-live="polite">أضف مصدرًا أو عقدة للبدء.</p>
+    </section>
+
+    <section class="details">
+      <section class="details analysis-panel">
+        <div class="analysis-heading">
+          <h2>نتائج التحليل الهيدروليكي</h2>
+          <span id="analysisBadge" data-state="idle">لم يُحسب بعد</span>
+        </div>
+        <div id="analysisReport" aria-live="polite">
+          <p class="muted">أكمل بيانات المصدر والعقد والأنابيب، ثم اضغط «تحليل هيدروليكي».</p>
+        </div>
+      </section>
+
+      <h2>مادة الأنابيب وخشونتها</h2>
+      <div class="field-grid material-grid">
+        <div class="field">
+          <label for="materialSelect">مادة الأنابيب</label>
+          <select id="materialSelect">
+            <option value="0.0000015">PVC / بلاستيك — 0.0015 مم</option>
+            <option value="0.00015" selected>قيمة افتراضية — 0.15 مم</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="materialRoughness">الخشونة المطلقة (م)</label>
+          <input id="materialRoughness" type="number" min="0" step="any" value="0.00015">
+        </div>
+      </div>
+      <button id="applyMaterial" class="save-button">تطبيق الخشونة على جميع الأنابيب</button>
+    </section>
+
+    <section class="details">
+      <h2>بيانات العنصر المحدد</h2>
+      <div id="detailsContent"><p class="muted">اختر عقدة أو أنبوبًا لعرض بياناته.</p></div>
+    </section>
+
+    <section class="summary">
+      <article><span>عدد العقد</span><strong id="nodeCount">0</strong></article>
+      <article><span>عدد الأنابيب</span><strong id="pipeCount">0</strong></article>
+      <article><span>إجمالي الطلب المدخل</span><strong id="totalDemand">0</strong><small>لتر/ثانية</small></article>
+    </section>
+
+    <div class="save-row project-actions">
+      <button id="saveProject" class="save-button">حفظ الشبكة</button>
+      <button id="loadProject" class="save-button secondary-button">استعادة الحفظ</button>
+      <button id="exportProject" class="save-button secondary-button">تصدير JSON</button>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
